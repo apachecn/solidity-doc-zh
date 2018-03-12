@@ -11,4 +11,4 @@ Solidity 英文文档: https://solidity.readthedocs.io/en/v0.4.20/
 
 ## 项目负责人
 
-[@那伊抹微笑](github.com/wangyangting)
+[@那伊抹微笑](https://github.com/wangyangting)
