@@ -1,5 +1,5 @@
 ###########################
-Frequently Asked Questions
+常见问题解答
 ###########################
 
 This list was originally compiled by `fivedogit <mailto:fivedogit@gmail.com>`_.

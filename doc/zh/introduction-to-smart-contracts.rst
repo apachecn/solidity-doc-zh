@@ -1,5 +1,5 @@
 ###############################
-Introduction to Smart Contracts
+智能合约简介
 ###############################
 
 .. _simple-smart-contract:

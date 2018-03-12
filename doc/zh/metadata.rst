@@ -1,5 +1,5 @@
 #################
-Contract Metadata
+合约元数据
 #################
 
 .. index:: metadata, contract verification

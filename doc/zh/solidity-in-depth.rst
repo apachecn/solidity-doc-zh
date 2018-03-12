@@ -1,5 +1,5 @@
 #################
-Solidity in Depth
+深入理解 Solidity
 #################
 
 This section should provide you with all you need to know about Solidity.

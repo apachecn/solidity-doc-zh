@@ -3,7 +3,7 @@
 .. _ABI:
 
 ******************************************
-Application Binary Interface Specification
+应用的二进制接口规范说明
 ******************************************
 
 Basic Design

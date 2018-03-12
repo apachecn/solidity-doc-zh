@@ -1,5 +1,5 @@
 ###############
-Common Patterns
+通用模式
 ###############
 
 .. index:: withdrawal

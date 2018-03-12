@@ -1,5 +1,5 @@
 ############
-Contributing
+贡献方式
 ############
 
 Help is always appreciated!
