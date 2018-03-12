@@ -1,5 +1,5 @@
 ******************
-Using the compiler
+使用编译器
 ******************
 
 .. index:: ! commandline compiler, compiler;commandline, ! solc, ! linker

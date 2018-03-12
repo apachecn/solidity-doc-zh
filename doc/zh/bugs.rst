@@ -3,7 +3,7 @@
 .. _known_bugs:
 
 ##################
-List of Known Bugs
+已知 Bugs 列表
 ##################
 
 Below, you can find a JSON-formatted list of some of the known security-relevant bugs in the

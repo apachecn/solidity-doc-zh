@@ -1,7 +1,7 @@
 .. index:: style, coding style
 
 #############
-Style Guide
+代码风格指南
 #############
 
 ************
