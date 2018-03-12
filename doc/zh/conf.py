@@ -49,7 +49,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Solidity'
+project = 'Solidity 中文文档'
 copyright = '2016-2017, Ethereum'
 
 # The version info for the project you're documenting, acts as replacement for
