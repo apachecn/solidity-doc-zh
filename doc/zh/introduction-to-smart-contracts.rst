@@ -32,7 +32,7 @@
 
 第一行告诉我们源代码是使用 Solidity 0.4.0 或更新的（不会破坏功能的，一般不会高于 0.5.0）版本来编写的.
 这是为了确保合约不会在新的编译器版本中突然有异常的行为.
-关键字 ``pragma`` 表示为编译指令, 通常情况下, 它会告诉编译器如何对源代码进行处理 (例如. s://en.wikipedia.org/wiki/Pragma_once>`_).
+关键字 ``pragma`` 表示为编译指令, 通常情况下, 它会告诉编译器如何对源代码进行处理 (例如. `pragma once <https://en.wikipedia.org/wiki/Pragma_once>`_).
 
 Solidity 场景中的合约就是一些代码的集合（它的 *functions* 函数）, 和数据（它的 *state* 状态）, 它们位于以太坊区块链上的一个特定地址上.
 代码行 ``uint storedData;`` 声明了一个名为 ``storedData`` 的 ``uint`` (256 位无符号整数) 类型的状态变量.
@@ -332,11 +332,8 @@ EVM 的指令集应尽量少, 以避免可能导致共识问题的错误实现.
 这意味着一个合约可以在运行时从不同的地址中动态的加载代码.
 存储, 当前地址和余额仍然指向调用合约, 只有代码来自调用地址.
 
-This makes it possible to implement the "library" feature in Solidity:
-Reusable library code that can be applied to a contract's storage, e.g. in
-order to  implement a complex data structure.
-
-这使得 Solidity 语言可以实现 "library（库）" 这个特性.
+这使得 Solidity 语言可以实现 "library（库）" 这个特性:
+可用于合约存储的可重复使用的库代码, 例如, 实现一个复杂的数据结构.
 
 .. index:: log
 
