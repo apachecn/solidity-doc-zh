@@ -100,7 +100,7 @@ Solidity 场景中的合约就是一些代码的集合（它的 *functions* 函�
 这种类型适合存储合约地址或外部人员密钥对.
 关键字 ``public`` 自动生成一个函数, 它可以让你从合约外部访问当前状态变量的值.
 如果没有该关键字, 其它的合约没有办法来访问该变量.
-该函数由编译器生成的代码大致如下所示:
+该函数由编译器生成的代码大致如下所示: ::
 
     function minter() returns (address) { return minter; }
 
@@ -114,7 +114,7 @@ Solidity 场景中的合约就是一些代码的集合（它的 *functions* 函�
 但是, 这种类比并不太恰当, 因为它既不能获得映射的所有 key（键）的列表, 也不能获得所有 value（值）的列表.
 因此, 要么记住你添加到映射中的数据（使用 list 或更高级的数据类型会更好）, 要么在不需要这种场景的情况下使用它.
 就像该实例一样.
-由 public 关键字创建的 :ref:`getter 函数 <getter-functions>` 这是更复杂一些的情况, 它大致如下所示:
+由 public 关键字创建的 :ref:`getter 函数 <getter-functions>` 这是更复杂一些的情况, 它大致如下所示: ::
 
     function balances(address _account) public view returns (uint) {
         return balances[_account];
@@ -128,7 +128,7 @@ Solidity 场景中的合约就是一些代码的集合（它的 *functions* 函�
 它会在 ``send`` 函数的最后一行被发出.
 用户界面（以及服务器应用程序）可以监听区块链上正在发送的时间, 而不需要太多的成本.
 一旦它被发出, 监听该事件的 listener 都将收到 ``from``, ``to`` 和 ``amount`` 这三个参数, 这种方式可以很方便用来追踪交易.
-为了监听这个事件, 你可以参考如何方式:
+为了监听这个事件, 你可以参考如何方式: ::
 
     Coin.Sent().watch({}, '', function(error, result) {
         if (!error) {
