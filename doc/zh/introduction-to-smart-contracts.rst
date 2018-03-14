@@ -5,13 +5,13 @@
 .. _simple-smart-contract:
 
 ***********************
-A Simple Smart Contract
+一个简单的智能合约示例
 ***********************
 
-Let us begin with the most basic example. It is fine if you do not understand everything
-right now, we will go into more detail later.
+让我们从最基本的例子开始.
+如果你现在不了解所有的套路, 不要慌, 我们将会在后面进行更详细的介绍.
 
-Storage
+存储
 =======
 
 ::
@@ -30,52 +30,37 @@ Storage
         }
     }
 
-The first line simply tells that the source code is written for
-Solidity version 0.4.0 or anything newer that does not break functionality
-(up to, but not including, version 0.5.0). This is to ensure that the
-contract does not suddenly behave differently with a new compiler version. The keyword ``pragma`` is called that way because, in general,
-pragmas are instructions for the compiler about how to treat the
-source code (e.g. `pragma once <https://en.wikipedia.org/wiki/Pragma_once>`_).
+第一行告诉我们源代码是使用 Solidity 0.4.0 或更新的（不会破坏功能的，一般不会高于 0.5.0）版本来编写的.
+这是为了确保合约不会在新的编译器版本中突然有异常的行为.
+关键字 ``pragma`` 表示为编译指令, 通常情况下, 它会告诉编译器如何对源代码进行处理 (例如. s://en.wikipedia.org/wiki/Pragma_once>`_).
 
-A contract in the sense of Solidity is a collection of code (its *functions*) and
-data (its *state*) that resides at a specific address on the Ethereum
-blockchain. The line ``uint storedData;`` declares a state variable called ``storedData`` of
-type ``uint`` (unsigned integer of 256 bits). You can think of it as a single slot
-in a database that can be queried and altered by calling functions of the
-code that manages the database. In the case of Ethereum, this is always the owning
-contract. And in this case, the functions ``set`` and ``get`` can be used to modify
-or retrieve the value of the variable.
+Solidity 场景中的合约就是一些代码的集合（它的 *functions* 函数）, 和数据（它的 *state* 状态）, 它们位于以太坊区块链上的一个特定地址上.
+代码行 ``uint storedData;`` 声明了一个名为 ``storedData`` 的 ``uint`` (256 位无符号整数) 类型的状态变量.
+你可以认为它是数据库中的 slot（插槽）, 它可以通过调用管理数据库代码的函数进行查询和修改.
+在以太坊的场景总共, 这就是 owning contract（拥有合约）.
+在这种情况下, 函数 ``set`` 和 ``get`` 可用于修改和获取变量的值.
 
-To access a state variable, you do not need the prefix ``this.`` as is common in
-other languages.
+要访问一个状态变量, 并不需要想 ``this.`` 这样的前缀, 虽然这是其它语言中非常常见的做法.
 
-This contract does not do much yet (due to the infrastructure
-built by Ethereum) apart from allowing anyone to store a single number that is accessible by
-anyone in the world without a (feasible) way to prevent you from publishing
-this number. Of course, anyone could just call ``set`` again with a different value
-and overwrite your number, but the number will still be stored in the history
-of the blockchain. Later, we will see how you can impose access restrictions
-so that only you can alter the number.
+该合约并没有做太多的事情（由于以太坊构建的基础设施原因）: 并且允许任何人存储一个单一的数字, 世界上任何人都可以访问, 没有（可行的）方法来阻止你发布这个数字.
+当然, 任何人都可以调用 ``set`` 方法, 并传入不同的值来覆盖你的数字, 但这个数据仍会存储在区块链的历史记录之中.
+随后, 我们将会看到怎么施加访问限制, 以确保你才能修改该数字.
 
 .. note::
-    All identifiers (contract names, function names and variable names) are restricted to
-    the ASCII character set. It is possible to store UTF-8 encoded data in string variables.
+    所有的标识符 (合约名称, 函数名称和变量名称) 都只能使用 ASCII 字符集.
+    可以在 string 类型的变量中存储 UTF-8 编码的数据.
 
 .. warning::
-    Be careful with using Unicode text as similarly looking (or even identical) characters can
-    have different code points and as such will be encoded as a different byte array.
+    小心使用 Unicode 文本字符, 因为有些字符长得有点像（甚至一样）, 但是其字符编码是不同的, 其编码后的字符数组也会不一样.
 
 .. index:: ! subcurrency
 
-Subcurrency Example
+子货币示例
 ===================
 
-The following contract will implement the simplest form of a
-cryptocurrency. It is possible to generate coins out of thin air, but
-only the person that created the contract will be able to do that (it is trivial
-to implement a different issuance scheme).
-Furthermore, anyone can send coins to each other without any need for
-registering with username and password - all you need is an Ethereum keypair.
+下面的合约将实现一个最简单的加密货币.
+在这里货币确实可以是无中生有产生的, 但是只有创建合约的人才可以做到（实现一个不同的发行计划也不难）.
+此外, 任何都可以给其他人转币, 并且不需要注册用户名和密码 - 所需要的只是以太坊密钥对.
 
 
 ::
@@ -83,17 +68,14 @@ registering with username and password - all you need is an Ethereum keypair.
     pragma solidity ^0.4.21;
 
     contract Coin {
-        // The keyword "public" makes those variables
-        // readable from outside.
+        // 关键字 "public" 让这些变量可以从外部读取
         address public minter;
         mapping (address => uint) public balances;
 
-        // Events allow light clients to react on
-        // changes efficiently.
+        // 轻量级轻客户端可以通过事件有效地针对变化来做出反应。
         event Sent(address from, address to, uint amount);
 
-        // This is the constructor whose code is
-        // run only when the contract is created.
+        // 这里是构造函数, 只有当合约创建时才会运行
         function Coin() public {
             minter = msg.sender;
         }
@@ -111,58 +93,42 @@ registering with username and password - all you need is an Ethereum keypair.
         }
     }
 
-This contract introduces some new concepts, let us go through them one by one.
+该合约介绍了一些新概念, 让我们逐一解读.
 
-The line ``address public minter;`` declares a state variable of type address
-that is publicly accessible. The ``address`` type is a 160-bit value
-that does not allow any arithmetic operations. It is suitable for
-storing addresses of contracts or keypairs belonging to external
-persons. The keyword ``public`` automatically generates a function that
-allows you to access the current value of the state variable
-from outside of the contract.
-Without this keyword, other contracts have no way to access the variable.
-The code of the function generated by the compiler is roughly equivalent
-to the following::
+代码行 ``address public minter;`` 声明了一个可以被公开访问的 address 类型的状态变量.
+``address`` 类型是一个 160 位的值, 且不允许任何算术操作.
+这种类型适合存储合约地址或外部人员密钥对.
+关键字 ``public`` 自动生成一个函数, 它可以让你从合约外部访问当前状态变量的值.
+如果没有该关键字, 其它的合约没有办法来访问该变量.
+该函数由编译器生成的代码大致如下所示:
 
     function minter() returns (address) { return minter; }
 
-Of course, adding a function exactly like that will not work
-because we would have a
-function and a state variable with the same name, but hopefully, you
-get the idea - the compiler figures that out for you.
+当然, 添加一个和上面一样的函数是行不通的, 因为我们会有同名的一个函数和一个状态变量, 但希望你能明白, 编译器已经为你解决了这个问题.
 
 .. index:: mapping
 
-The next line, ``mapping (address => uint) public balances;`` also
-creates a public state variable, but it is a more complex datatype.
-The type maps addresses to unsigned integers.
-Mappings can be seen as `hash tables <https://en.wikipedia.org/wiki/Hash_table>`_ which are
-virtually initialized such that every possible key exists and is mapped to a
-value whose byte-representation is all zeros. This analogy does not go
-too far, though, as it is neither possible to obtain a list of all keys of
-a mapping, nor a list of all values. So either keep in mind (or
-better, keep a list or use a more advanced data type) what you
-added to the mapping or use it in a context where this is not needed,
-like this one. The :ref:`getter function<getter-functions>` created by the ``public`` keyword
-is a bit more complex in this case. It roughly looks like the
-following::
+下一行代码, ``mapping (address => uint) public balances;`` 也创建了一个公共的状态变量, 但是它是一个更加复杂的数据类型.
+该类型将 address 映射为无符号的整数.
+映射还可以看作是 `哈希表 <https://en.wikipedia.org/wiki/Hash_table>`_, 它会被虚拟初始化, 以使所有可能存在的 key（键）都映射到一个字节表示为全零的值.
+但是, 这种类比并不太恰当, 因为它既不能获得映射的所有 key（键）的列表, 也不能获得所有 value（值）的列表.
+因此, 要么记住你添加到映射中的数据（使用 list 或更高级的数据类型会更好）, 要么在不需要这种场景的情况下使用它.
+就像该实例一样.
+由 public 关键字创建的 :ref:`getter 函数 <getter-functions>` 这是更复杂一些的情况, 它大致如下所示:
 
     function balances(address _account) public view returns (uint) {
         return balances[_account];
     }
 
-As you see, you can use this function to easily query the balance of a
-single account.
+正如你所看到的那样, 你可以使用该函数很容易的查询到账户的余额.
 
 .. index:: event
 
-The line ``event Sent(address from, address to, uint amount);`` declares
-a so-called "event" which is emitted in the last line of the function
-``send``. User interfaces (as well as server applications of course) can
-listen for those events being emitted on the blockchain without much
-cost. As soon as it is emitted, the listener will also receive the
-arguments ``from``, ``to`` and ``amount``, which makes it easy to track
-transactions. In order to listen for this event, you would use ::
+代码行 ``event Sent(address from, address to, uint amount);`` 声明了一个所谓的 "event（事件）",
+它会在 ``send`` 函数的最后一行被发出.
+用户界面（以及服务器应用程序）可以监听区块链上正在发送的时间, 而不需要太多的成本.
+一旦它被发出, 监听该事件的 listener 都将收到 ``from``, ``to`` 和 ``amount`` 这三个参数, 这种方式可以很方便用来追踪交易.
+为了监听这个事件, 你可以参考如何方式:
 
     Coin.Sent().watch({}, '', function(error, result) {
         if (!error) {
@@ -175,310 +141,237 @@ transactions. In order to listen for this event, you would use ::
         }
     })
 
-Note how the automatically generated function ``balances`` is called from
-the user interface.
+请注意, 这里自动生成的函数 ``balances`` 是如何从用户界面调用的.
 
 .. index:: coin
 
-The special function ``Coin`` is the
-constructor which is run during creation of the contract and
-cannot be called afterwards. It permanently stores the address of the person creating the
-contract: ``msg`` (together with ``tx`` and ``block``) is a magic global variable that
-contains some properties which allow access to the blockchain. ``msg.sender`` is
-always the address where the current (external) function call came from.
+特殊函数 ``Coin`` 是在创建合约期间运行的构造函数, 不能在事后调用.
+它会永久的存储合约创建者的地址:  ``msg`` (以及 ``tx`` 和 ``block``) 是一个神奇的全局变量, 其中包含一些可以访问区块链的属性.
+``msg.sender`` 始终是当前（外部的）函数调用的来源地址.
 
-Finally, the functions that will actually end up with the contract and can be called
-by users and contracts alike are ``mint`` and ``send``.
-If ``mint`` is called by anyone except the account that created the contract,
-nothing will happen. On the other hand, ``send`` can be used by anyone (who already
-has some of these coins) to send coins to anyone else. Note that if you use
-this contract to send coins to an address, you will not see anything when you
-look at that address on a blockchain explorer, because the fact that you sent
-coins and the changed balances are only stored in the data storage of this
-particular coin contract. By the use of events it is relatively easy to create
-a "blockchain explorer" that tracks transactions and balances of your new coin.
+最后, 实际结束于合约并可由用户和合约调用的函数是 ``mint`` 和 ``send``.
+如果 ``mint`` 函数被合约创建者账户以外的其他人调用, 则什么都不会发生.
+另一方面, ``send`` 函数可以被任何人（已经有币的人）用于向其他人转币.
+请注意, 如果你使用该合约发送币到一个地址中, 当你在区块链浏览器上查看该地址时是看不到任何相关信息的.
+因为, 实际上你发送币和更改余额的信息仅仅存储在特定合约的数据存储器中.
+通过使用事件, 你可以非常简单的为你的新币创建一个 "blockchain explorer（区块链浏览器）" 来追踪交易和余额. 
 
 .. _blockchain-basics:
 
 *****************
-Blockchain Basics
+区块链基础
 *****************
 
-Blockchains as a concept are not too hard to understand for programmers. The reason is that
-most of the complications (mining, `hashing <https://en.wikipedia.org/wiki/Cryptographic_hash_function>`_, `elliptic-curve cryptography <https://en.wikipedia.org/wiki/Elliptic_curve_cryptography>`_, `peer-to-peer networks <https://en.wikipedia.org/wiki/Peer-to-peer>`_, etc.)
-are just there to provide a certain set of features and promises. Once you accept these
-features as given, you do not have to worry about the underlying technology - or do you have
-to know how Amazon's AWS works internally in order to use it?
+对于程序员来说, 区块链这个改练并不是很难理解.
+这是因为大多数难懂的东西 (挖矿, `哈希 <https://en.wikipedia.org/wiki/Cryptographic_hash_function>`_, `椭圆曲线密码学 <https://en.wikipedia.org/wiki/Elliptic_curve_cryptography>`_, `点对点网络（P2P） <https://en.wikipedia.org/wiki/Peer-to-peer>`_, 等等.)
+都只是用于提供特定的功能和允诺.
+一旦你明白这些概念, 不必太过关心底层个技术 - 比如, 难道你必须知道亚马逊的 AWS 内部原理, 你才能使用它么？
 
 .. index:: transaction
 
-Transactions
+交易 / 事务
 ============
 
-A blockchain is a globally shared, transactional database.
-This means that everyone can read entries in the database just by participating in the network.
-If you want to change something in the database, you have to create a so-called transaction
-which has to be accepted by all others.
-The word transaction implies that the change you want to make (assume you want to change
-two values at the same time) is either not done at all or completely applied. Furthermore,
-while your transaction is applied to the database, no other transaction can alter it.
+区块链是全球共享的, 事务性的数据库.
+这意味着每个人都可以通过加入该网络中来读取数据库中的记录.
+如果你想要修改数据库中的某些东西, 你必须去创建一个所谓的事务.
+事务一词意味着你想要做的（假设你想要同事更改两个值）, 要么什么都没做, 要么都修改成功.
+此外, 当你的事务被应用到数据库中时, 其它事务不能修改数据库.
 
-As an example, imagine a table that lists the balances of all accounts in an
-electronic currency. If a transfer from one account to another is requested,
-the transactional nature of the database ensures that if the amount is
-subtracted from one account, it is always added to the other account. If due
-to whatever reason, adding the amount to the target account is not possible,
-the source account is also not modified.
+举个栗子, 设想有一张表, 它列出了电子货币中所有账户的余额.
+如果一个请求是转移一个账户的余额到另一个账户, 数据库的事务特性确保如果从一个账户扣除余额之后, 它总被添加到另一个账户.
+如果由于某些原因, 无法添加金额到目标账户时, 源账户也不会发生变化.
 
-Furthermore, a transaction is always cryptographically signed by the sender (creator).
-This makes it straightforward to guard access to specific modifications of the
-database. In the example of the electronic currency, a simple check ensures that
-only the person holding the keys to the account can transfer money from it.
+此外, 交易总是由发送者（创建者）来进行密码学签名的.
+这使得保护对数据库特定修改的访问变得非常简单.
+在刚刚的电子货币示例中, 简单的审核确保只有持有账户密钥的人才可以从中进行转账.
 
 .. index:: ! block
 
-Blocks
+区块
 ======
 
-One major obstacle to overcome is what, in Bitcoin terms, is called a "double-spend attack":
-What happens if two transactions exist in the network that both want to empty an account,
-a so-called conflict?
+在比特币场景中, 需要客服的一个难题被称为 "double-spend attack（双重消耗攻击）":
+如果网络中存在两笔交易, 且它们都想要花光一个账户的余额时, 会发生什么情况呢？交易会冲突吗？
 
-The abstract answer to this is that you do not have to care. An order of the transactions
-will be selected for you, the transactions will be bundled into what is called a "block"
-and then they will be executed and distributed among all participating nodes.
-If two transactions contradict each other, the one that ends up being second will
-be rejected and not become part of the block.
+一个简单的答案是, 你不必关心这个问题.
+交易顺序将为您做出选择, 交易将被捆绑到所谓的 "块" 中, 然后它们将在所有参与节点中执行和分配.
+如果两笔交易相互抵触, 那么最终成为第二笔交易的交易将被拒绝, 并且不能成为该区块的一部分.
 
-These blocks form a linear sequence in time and that is where the word "blockchain"
-derives from. Blocks are added to the chain in rather regular intervals - for
-Ethereum this is roughly every 17 seconds.
+这些区块在时间上形成了一个线性序列, 这就是 "区块链" 这个术语的来源.
+区块以一定的时间间隔添加到链上 - 对于以太坊来说, 这个间隔大约是 17 秒.
 
-As part of the "order selection mechanism" (which is called "mining") it may happen that
-blocks are reverted from time to time, but only at the "tip" of the chain. The more
-blocks that are added on top, the less likely it is. So it might be that your transactions
-are reverted and even removed from the blockchain, but the longer you wait, the less
-likely it will be.
-
+作为 "顺序选择机制"（也就是 "挖矿"）的一部分, 可能发生区块不时被还原的情况, 但仅限于链的 "末端".
+顶部添加的区块越多, 其可能性越小.
+因此, 您的交易可能会被还原, 甚至从区块链中移除, 但您等待的时间越长, 可能性越小.
 
 .. _the-ethereum-virtual-machine:
 
 .. index:: !evm, ! ethereum virtual machine
 
 ****************************
-The Ethereum Virtual Machine
+以太坊虚拟机
 ****************************
 
-Overview
+概述
 ========
 
-The Ethereum Virtual Machine or EVM is the runtime environment
-for smart contracts in Ethereum. It is not only sandboxed but
-actually completely isolated, which means that code running
-inside the EVM has no access to network, filesystem or other processes.
-Smart contracts even have limited access to other smart contracts.
+以太坊虚拟机或 EVM 是以太坊中智能合约的运行环境.
+它不仅是开箱即用的, 而且还是完全隔离的, 这意味着运行在 EVM 中的代码是无法访问网络, 文件系统或其它进程的.
+智能合约甚至对其他智能合约的访问权限也是有限制的.
 
 .. index:: ! account, address, storage, balance
 
-Accounts
+账户
 ========
 
-There are two kinds of accounts in Ethereum which share the same
-address space: **External accounts** that are controlled by
-public-private key pairs (i.e. humans) and **contract accounts** which are
-controlled by the code stored together with the account.
+以太坊中有两种类型的账户, 它们共享了相同的地址空间: **外部账户** 由公钥-私钥对来控制（i.e. humans）,
+**合约账户** 是由存储在账户中的代码所控制的.
 
-The address of an external account is determined from
-the public key while the address of a contract is
-determined at the time the contract is created
-(it is derived from the creator address and the number
-of transactions sent from that address, the so-called "nonce").
+外部账户的地址是由公钥来决定的, 而合约账户的地址是在合约所创建时所确定的（它来源于创建者地址和从该地址发送的事务数量, 即所谓的 "nonce（随机数）"）
 
-Regardless of whether or not the account stores code, the two types are
-treated equally by the EVM.
+无论账户是否存储了代码, 这两种类型的账户对 EVM 来说都是一样的.
 
-Every account has a persistent key-value store mapping 256-bit words to 256-bit
-words called **storage**.
+每一个账户都有一个键值对形式的持久化存储, 它将 256 位的字符映射成 256 位的字符, 称之为 **storage（存储）**
 
-Furthermore, every account has a **balance** in
-Ether (in "Wei" to be exact) which can be modified by sending transactions that
-include Ether.
+此外, 每一个账户中都有一个以太币形式的 **balance（余额）** （精确到 "Wei"）,
+可以通过发送包含以太币的交易来改变它.
 
 .. index:: ! transaction
 
-Transactions
+交易
 ============
 
-A transaction is a message that is sent from one account to another
-account (which might be the same or the special zero-account, see below).
-It can include binary data (its payload) and Ether.
+一个交易可以看作是从一个帐户发送到另一个帐户的消息（这里的账户, 可能是相同的或特殊的零帐户, 请参阅下文）.
+它可以包含一个二进制数据（ payload 合约负载）和以太币.
 
-If the target account contains code, that code is executed and
-the payload is provided as input data.
+如果目标账户包含代码, 该代码会被执行, 并且 payload 会作为输入参数数据所提供.
 
-If the target account is the zero-account (the account with the
-address ``0``), the transaction creates a **new contract**.
-As already mentioned, the address of that contract is not
-the zero address but an address derived from the sender and
-its number of transactions sent (the "nonce"). The payload
-of such a contract creation transaction is taken to be
-EVM bytecode and executed. The output of this execution is
-permanently stored as the code of the contract.
-This means that in order to create a contract, you do not
-send the actual code of the contract, but in fact code that
-returns that code.
+如果目标账户是一个零账户（账户地址为 0）, 此交易创建一个 **新的合约**.
+如前文所述, 合约的地址不是零地址, 而是通过合约创建者的地址和从该地址发出过的交易数量计算得到的（即所谓的 "nonce（随机数）"）.
+这个用来创建合约的交易的 payload 会被转换为 EVM 字节码并执行.
+执行的输出将作为合约代码被永久存储.
+这意味着, 要创建一个合约, 你不需要向合约发送真正的合约代码, 而是发送能够产生真正代码的代码.
 
 .. index:: ! gas, ! gas price
 
-Gas
-===
+Gas（汽油）
+===========
 
-Upon creation, each transaction is charged with a certain amount of **gas**,
-whose purpose is to limit the amount of work that is needed to execute
-the transaction and to pay for this execution. While the EVM executes the
-transaction, the gas is gradually depleted according to specific rules.
+一旦创建合约之后, 每一笔交易都会收取一定数量的 **Gas（汽油）**,
+其目的是限制执行交易所需的工作量并支付该执行的费用.
+当 EVM 执行交易时, gas 会根据具体规则逐渐耗尽.
 
-The **gas price** is a value set by the creator of the transaction, who
-has to pay ``gas_price * gas`` up front from the sending account.
-If some gas is left after the execution, it is refunded in the same way.
+**gas price（汽油价格）** 是一个被交易创建者设置的值, 发送者必预付 ``gas_price * gas`` 这么多的手续费.
+如果交易执行后还有剩余的 gas, 那么它将会返还给你.
 
-If the gas is used up at any point (i.e. it is negative),
-an out-of-gas exception is triggered, which reverts all modifications
-made to the state in the current call frame.
+如果 gas 在任意时刻被用完（例如. 它成为了负值）, 就会触发一个 out-of-gas exception（无汽油异常）, 这将恢复当前调用框架中对状态所做的所有修改.
 
 .. index:: ! storage, ! memory, ! stack
 
-Storage, Memory and the Stack
+存储,内存和堆栈
 =============================
 
-Each account has a persistent memory area which is called **storage**.
-Storage is a key-value store that maps 256-bit words to 256-bit words.
-It is not possible to enumerate storage from within a contract
-and it is comparatively costly to read and even more so, to modify
-storage. A contract can neither read nor write to any storage apart
-from its own.
+每一个账户都有一个被称作 **storage（存储）** 的持久化存储区域.
+storage（存储）是一个 key-value（键值对）存储, 其存储着一个由 256 位的键到 256 位的值的映射.
+从合同中列举存储是不可能的, 并且读取更加昂贵, 甚至更改存储更高.
+一个合约只能对它自己的存储进行读写.
 
-The second memory area is called **memory**, of which a contract obtains
-a freshly cleared instance for each message call. Memory is linear and can be
-addressed at byte level, but reads are limited to a width of 256 bits, while writes
-can be either 8 bits or 256 bits wide. Memory is expanded by a word (256-bit), when
-accessing (either reading or writing) a previously untouched memory word (ie. any offset
-within a word). At the time of expansion, the cost in gas must be paid. Memory is more
-costly the larger it grows (it scales quadratically).
+第二个内存区域称之为 **memory（内存）**, 合约会试图为每一次消息调用获取一块被重新擦拭干净的内存实例.
+内存是线性的, 可按字节级进行寻址, 但读的长度被限制为 256 位, 而写的长度可以是 8 位或 256 位.
+当访问（无论是读还是写）之前从未访问过的内存数据（word）时（无论是偏移到该数据内的任何位置）, 内存将按字（word）进行扩展（每个字是 256 bit）.
+扩容也将消耗一定的 gas.
+内存越大, 费用就越高（平方级别）.
 
-The EVM is not a register machine but a stack machine, so all
-computations are performed on an area called the **stack**. It has a maximum size of
-1024 elements and contains words of 256 bits. Access to the stack is
-limited to the top end in the following way:
-It is possible to copy one of
-the topmost 16 elements to the top of the stack or swap the
-topmost element with one of the 16 elements below it.
-All other operations take the topmost two (or one, or more, depending on
-the operation) elements from the stack and push the result onto the stack.
-Of course it is possible to move stack elements to storage or memory,
-but it is not possible to just access arbitrary elements deeper in the stack
-without first removing the top of the stack.
+EVM 不是基于寄存器的, 而是基于 Stack（栈）的, 因此所有的计算都在一个被称为 **Stack（栈）** 的区域上执行.
+栈的最大元素是 1024, 且每个元素的长度是 256 位.
+对栈的访问仅限于顶端, 限制方式如下:
+允许拷贝最顶端的 16 个元素中的一个到栈顶, 或者是交换栈顶元素和下面 16 个元素中的一个.
+所有其他操作都只能取最顶的两个（或一个, 或更多, 取决于具体的操作）元素, 运算后, 把结果压入栈顶.
+当然可以把栈上的元素放到存储或内存中.
+但是无法只访问栈上指定深度的那个元素, 除非先从栈顶移除其他元素.
 
 .. index:: ! instruction
 
-Instruction Set
+指令集
 ===============
 
-The instruction set of the EVM is kept minimal in order to avoid
-incorrect implementations which could cause consensus problems.
-All instructions operate on the basic data type, 256-bit words.
-The usual arithmetic, bit, logical and comparison operations are present.
-Conditional and unconditional jumps are possible. Furthermore,
-contracts can access relevant properties of the current block
-like its number and timestamp.
+EVM 的指令集应尽量少, 以避免可能导致共识问题的错误实现.
+所有指令都以基本数据类型（256 位字）进行操作.
+通常的算术, bit（比特）, 逻辑和比较操作都存在.
+有条件的和无条件的跳转是可以的.
+此外, 合约可以访问当前区块的相关属性, 如其编号和时间戳.
 
 .. index:: ! message call, function;call
 
-Message Calls
+消息调用
 =============
 
-Contracts can call other contracts or send Ether to non-contract
-accounts by the means of message calls. Message calls are similar
-to transactions, in that they have a source, a target, data payload,
-Ether, gas and return data. In fact, every transaction consists of
-a top-level message call which in turn can create further message calls.
+合约可以通过消息调用的方式来调用其它合约, 或者发送以太币到一个非合约账户.
+消息调用与交易非常相似, 它们都有一个 source（来源）, target（目标）, data payload（数据负载）, Ether（以太币）, gas（汽油）金额 return data（返回数据）.
+事实上, 每笔交易都由一个顶级的消息调用组成, 该消息又可以创建更多的消息调用.
 
-A contract can decide how much of its remaining **gas** should be sent
-with the inner message call and how much it wants to retain.
-If an out-of-gas exception happens in the inner call (or any
-other exception), this will be signalled by an error value put onto the stack.
-In this case, only the gas sent together with the call is used up.
-In Solidity, the calling contract causes a manual exception by default in
-such situations, so that exceptions "bubble up" the call stack.
+合约可以决定在其内部的消息调用中, 对于剩余的 **gas**, 应发送和保留多少.
+如果在内部消息调用时发生了 out-of-gas exception（或其他任何异常）, 这将由一个被压入栈顶的错误值所指明.
+此时, 只有与该内部消息调用一起发送的 gas（汽油）会被消耗掉.
+并且, 在 Solidity 语言中, 发起调用的合约默认会触发一个 manual exception（手动的异常）, 以便异常可以从调用栈里 "bubble up（冒泡出来）".
 
-As already said, the called contract (which can be the same as the caller)
-will receive a freshly cleared instance of memory and has access to the
-call payload - which will be provided in a separate area called the **calldata**.
-After it has finished execution, it can return data which will be stored at
-a location in the caller's memory preallocated by the caller.
+如前文所述, 被调用的合约（可以和调用者是同一个合约）会获得一块刚刚清空过的内存, 并可以访问调用的 payload —— 由被称为 **calldata** 的独立区域所提供的数据.
+调用执行结束后, 返回数据将被存放在调用方预先分配好的一块内存中.
 
-Calls are **limited** to a depth of 1024, which means that for more complex
-operations, loops should be preferred over recursive calls.
+调用深度被限制为 1024, 因此对于更加复杂的操作, 我们应使用循环而不是递归.
 
 .. index:: delegatecall, callcode, library
 
-Delegatecall / Callcode and Libraries
+委托调用 / 调用代码和库
 =====================================
 
-There exists a special variant of a message call, named **delegatecall**
-which is identical to a message call apart from the fact that
-the code at the target address is executed in the context of the calling
-contract and ``msg.sender`` and ``msg.value`` do not change their values.
+有一种特殊类型的消息调用, 称之为 **delegatecall（委托调用）**,
+除了目标地址上的代码是在调用合约的上下文中执行的, 并且 ``msg.sender`` 和 ``msg.value`` 不会改变它们的值之外, 这与消息调用是相同的.
 
-This means that a contract can dynamically load code from a different
-address at runtime. Storage, current address and balance still
-refer to the calling contract, only the code is taken from the called address.
+这意味着一个合约可以在运行时从不同的地址中动态的加载代码.
+存储, 当前地址和余额仍然指向调用合约, 只有代码来自调用地址.
 
 This makes it possible to implement the "library" feature in Solidity:
 Reusable library code that can be applied to a contract's storage, e.g. in
 order to  implement a complex data structure.
 
+这使得 Solidity 语言可以实现 "library（库）" 这个特性.
+
 .. index:: log
 
-Logs
+日志
 ====
 
-It is possible to store data in a specially indexed data structure
-that maps all the way up to the block level. This feature called **logs**
-is used by Solidity in order to implement **events**.
-Contracts cannot access log data after it has been created, but they
-can be efficiently accessed from outside the blockchain.
-Since some part of the log data is stored in `bloom filters <https://en.wikipedia.org/wiki/Bloom_filter>`_, it is
-possible to search for this data in an efficient and cryptographically
-secure way, so network peers that do not download the whole blockchain
-("light clients") can still find these logs.
+有一种特殊的可索引的数据结构, 其存储的数据可以一路映射直到区块层级.
+这个特性被称为 **logs** （日志）, Solidity 语言用它来实现 **events**（事件）.
+合约创建之后就无法访问日志数据, 但是这些数据可以从区块链外高效的访问.
+因为部分日志数据被存储在 `布隆过滤器 <https://en.wikipedia.org/wiki/Bloom_filter>`_ 中, 我们可以高效并且加密安全地搜索日志,
+所以那些没有下载整个区块链的网络节点（轻客户端）也可以找到这些日志.
 
 .. index:: contract creation
 
-Create
+创建
 ======
 
-Contracts can even create other contracts using a special opcode (i.e.
-they do not simply call the zero address). The only difference between
-these **create calls** and normal message calls is that the payload data is
-executed and the result stored as code and the caller / creator
-receives the address of the new contract on the stack.
+合约甚至可以通过一个特殊的指令来创建其他合约（即不是简单的调用零地址）.
+创建合约的调用 **create calls** 和普通消息调用的唯一区别在于有效负载数据会被执行, 执行的结果被存储为合约代码, 调用者 / 创建者在栈上得到新合约的地址.
 
 .. index:: selfdestruct
 
-Self-destruct
+自毁
 =============
 
-The only possibility that code is removed from the blockchain is
-when a contract at that address performs the ``selfdestruct`` operation.
-The remaining Ether stored at that address is sent to a designated
-target and then the storage and code is removed from the state.
+合约代码从区块链上移除的唯一方式是合约在合约地址上的执行 ``selfdestruct（自毁）``.
+合约账户上剩余的以太币会发送给指定的目标, 然后其存储和代码将从状态中被移除.
 
-.. warning:: Even if a contract's code does not contain a call to ``selfdestruct``,
-  it can still perform that operation using ``delegatecall`` or ``callcode``.
+.. warning:: 
+    尽管一个合约的代码没有显式的调用 ``selfdestruct（自毁）``, 它仍然可以通过 ``delegatecall（委托调用）`` or ``callcode（调用代码）`` 来执行操作.
 
-.. note:: The pruning of old contracts may or may not be implemented by Ethereum
-  clients. Additionally, archive nodes could choose to keep the contract storage
-  and code indefinitely.
 
-.. note:: Currently **external accounts** cannot be removed from the state.
+.. note::
+    旧合约的删减可能会, 也可能不会被以太坊的各种客户端程序实现.
+    另外, 归档节点可选择无限期保留合约存储和代码.
+
+.. note::
+    目前 **external accounts（外部账户）** 不能从状态中移出.
